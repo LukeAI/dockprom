@@ -5,7 +5,7 @@ Forked from [dockprom](https://github.com/stefanprodan/dockprom) adapted to also
 
 ## Setup docker, docker-compose, docker-nvidia2
 
-# Install Docker
+### Install Docker
 [docs](https://docs.docker.com/engine/install/ubuntu/)
 
 ```
@@ -16,13 +16,13 @@ sudo usermod -aG docker $USER
 # logout afterwards for this to take effect
 ```
 
-# Install docker-compose
+### Install docker-compose
 `--user` flag is optional, but best practice IMO
 ```
 pip3 install docker-compose --user
 ```
 
-# Install nvidia-docker
+### Install nvidia-docker
 [docs](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
 
 ```
@@ -37,7 +37,7 @@ sudo apt-get install -y nvidia-docker2
 sudo systemctl restart docker
 ```
 
-# test nvidia-docker:
+### test nvidia-docker:
 
 You should see something like this...
 ```
@@ -70,8 +70,8 @@ Sun Oct 25 13:20:14 2020
 +-----------------------------------------------------------------------------+
 ```
 
-# configure nvidia as default environment
-docker-compose yml appears to not support gpu passthrough yet as far as I can tell, so you have to set the default environment to nvidia. ensure your `/etc/docker/daemon.json` matches the below:
+### configure nvidia as default environment
+docker-compose yml appears to not support gpu passthrough as an explicit config option yet (see [here](https://github.com/docker/compose/issues/6691)) so you have to set the default docker environment to nvidia. Do so by ensuring your `/etc/docker/daemon.json` matches the below:
 
 ```
 {
@@ -84,8 +84,25 @@ docker-compose yml appears to not support gpu passthrough yet as far as I can te
     }
 }
 ```
+Then restart docker `sudo systemctl restart docker`
 
 
+### view some graphs
+
+Clone this repo and run docker-compose:
+```
+git clone https://github.com/LukeAI/dockprom.git
+cd dockprom
+ADMIN_USER=admin ADMIN_PASSWORD=admin docker-compose up -d
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your favourite webbrowser and enter the default credentials of `admin` and `admin`
+
+You can access all the dashboards by clicking Home at the top. "Docker Host" will give you the Host PC metrics eg. cpu, ram etc. Nvidia DCGM Exporter will give you all GPU related metrics
+
+
+
+## Original README
 
 A monitoring solution for Docker hosts and containers with [Prometheus](https://prometheus.io/), [Grafana](http://grafana.org/), [cAdvisor](https://github.com/google/cadvisor),
 [NodeExporter](https://github.com/prometheus/node_exporter) and alerting with [AlertManager](https://github.com/prometheus/alertmanager).
