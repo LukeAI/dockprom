@@ -8,14 +8,6 @@ Forked from [dockprom](https://github.com/stefanprodan/dockprom) adapted to also
 ### Install Docker
 [docs](https://docs.docker.com/engine/install/ubuntu/)
 
-```
-curl https://get.docker.com | sh
-sudo systemctl start docker && sudo systemctl enable docker
-sudo groupadd docker
-sudo usermod -aG docker $USER
-# logout afterwards for this to take effect
-```
-
 ### Install docker-compose
 `--user` flag is optional, but best practice IMO
 ```
