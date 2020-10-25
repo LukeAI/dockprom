@@ -37,9 +37,9 @@ sudo apt-get install -y nvidia-docker2
 sudo systemctl restart docker
 ```
 
-### test nvidia-docker:
+### Test
 
-You should see something like this...
+Run the base CUDA docker and check it can see your GPU, you should see something like this...
 ```
 $ docker run --rm --gpus all nvidia/cuda:10.0-base nvidia-smi
 Unable to find image 'nvidia/cuda:10.0-base' locally
@@ -70,7 +70,7 @@ Sun Oct 25 13:20:14 2020
 +-----------------------------------------------------------------------------+
 ```
 
-### configure nvidia as default environment
+### Configure nvidia as default environment
 docker-compose yml appears to not support gpu passthrough as an explicit config option yet (see [here](https://github.com/docker/compose/issues/6691)) so you have to set the default docker environment to nvidia. Do so by ensuring your `/etc/docker/daemon.json` matches the below:
 
 ```
@@ -87,7 +87,7 @@ docker-compose yml appears to not support gpu passthrough as an explicit config 
 Then restart docker `sudo systemctl restart docker`
 
 
-### view some graphs
+### View some graphs
 
 Clone this repo and run docker-compose:
 ```
