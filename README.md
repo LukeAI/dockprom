@@ -1,6 +1,92 @@
 dockprom
 ========
 
+Forked from [dockprom](https://github.com/stefanprodan/dockprom) adapted to also log and display nvidia GPU metrics using the official [dashboard](https://grafana.com/grafana/dashboards/11578). Tested on ubuntu 16.04 with Nvidia-Docker 2.0, docker-compose version 1.27.4, Docker 19.03.13, nvidia driver 410.48
+
+## Setup docker, docker-compose, docker-nvidia2
+
+# Install Docker
+[docs](https://docs.docker.com/engine/install/ubuntu/)
+
+```
+curl https://get.docker.com | sh
+sudo systemctl start docker && sudo systemctl enable docker
+sudo groupadd docker
+sudo usermod -aG docker $USER
+# logout afterwards for this to take effect
+```
+
+# Install docker-compose
+`--user` flag is optional, but best practice IMO
+```
+pip3 install docker-compose --user
+```
+
+# Install nvidia-docker
+[docs](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
+
+```
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2
+sudo systemctl restart docker
+```
+
+# test nvidia-docker:
+
+You should see something like this...
+```
+$ docker run --rm --gpus all nvidia/cuda:10.0-base nvidia-smi
+Unable to find image 'nvidia/cuda:10.0-base' locally
+10.0-base: Pulling from nvidia/cuda
+171857c49d0f: Already exists 
+419640447d26: Already exists 
+61e52f862619: Already exists 
+c118dad7e37a: Pull complete 
+f3015ef64b84: Pull complete 
+4c97ef225f71: Pull complete 
+Digest: sha256:07000aa57b96082023ab7a45a188f71076028e379e08f1ed3c24594b0d5ba242
+Status: Downloaded newer image for nvidia/cuda:10.0-base
+Sun Oct 25 13:20:14 2020       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 410.48                 Driver Version: 410.48                    |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|===============================+======================+======================|
+|   0  GeForce GTX 105...  On   | 00000000:01:00.0  On |                  N/A |
+| N/A   56C    P3    N/A /  N/A |    395MiB /  4040MiB |      1%      Default |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                       GPU Memory |
+|  GPU       PID   Type   Process name                             Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+
+# configure nvidia as default environment
+docker-compose yml appears to not support gpu passthrough yet as far as I can tell, so you have to set the default environment to nvidia. ensure your `/etc/docker/daemon.json` matches the below:
+
+```
+{
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+```
+
+
+
 A monitoring solution for Docker hosts and containers with [Prometheus](https://prometheus.io/), [Grafana](http://grafana.org/), [cAdvisor](https://github.com/google/cadvisor),
 [NodeExporter](https://github.com/prometheus/node_exporter) and alerting with [AlertManager](https://github.com/prometheus/alertmanager).
 

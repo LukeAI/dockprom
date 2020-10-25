@@ -67,6 +67,18 @@ services:
     labels:
       org.label-schema.group: "monitoring"
 
+  nvidiaexporter:
+    image: nvidia/dcgm-exporter:1.7.2
+    container_name: nvidiaexporter
+    restart: unless-stopped
+    expose:
+      - 9400
+    networks:
+      - monitor-net
+    runtime: nvidia
+    labels:
+      org.label-schema.group: "monitoring"
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.37.0
     container_name: cadvisor
