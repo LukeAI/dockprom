@@ -62,6 +62,8 @@ Sun Oct 25 13:20:14 2020
 ### Configure nvidia as default environment
 docker-compose yml appears to not support gpu passthrough as an explicit config option yet (see [here](https://github.com/docker/compose/issues/6691)) so you have to set the default docker environment to nvidia. Do so by ensuring your `/etc/docker/daemon.json` matches the below:
 
+UPDATE: maybe no longer the case? https://github.com/docker/compose/pull/7929
+
 ```
 {
     "default-runtime": "nvidia",
